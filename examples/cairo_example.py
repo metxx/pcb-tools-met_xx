@@ -28,7 +28,19 @@ from gerber import load_layer
 from gerber.render import RenderSettings, theme
 from gerber.render.cairo_backend import GerberCairoContext
 
+import numpy as np
+import cv2
+from screeninfo import get_monitors
+import time
+
 GERBER_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), 'gerbers'))
+
+screen_id = 2
+
+screen = get_monitors()[0]
+print(screen)
+width, height = screen.width, screen.height
+
 
 
 # Open the gerber files
@@ -39,6 +51,13 @@ drill = load_layer(os.path.join(GERBER_FOLDER, 'ncdrill.DRD'))
 
 # Create a new drawing context
 ctx = GerberCairoContext()
+
+display_bounds = [[0,0],[0,0]]
+
+display_bounds[0][1] = width
+display_bounds[1][1] = height
+
+ctx.set_bounds(display_bounds)
 
 # Draw the copper layer. render_layer() uses the default color scheme for the
 # layer, based on the layer type. Copper layers are rendered as
@@ -62,17 +81,14 @@ ctx.render_layer(drill)
 # Write output to png file
 ctx.dump(os.path.join(os.path.dirname(__file__), 'cairo_example.png'))
 
-# Load the bottom layers
-copper = load_layer(os.path.join(GERBER_FOLDER, 'bottom_copper.GBL'))
-mask = load_layer(os.path.join(GERBER_FOLDER, 'bottom_mask.GBS'))
+exposure_layer = cv2.imread('cairo_example.png')
 
-# Clear the drawing
-ctx.clear()
-
-# Render bottom layers
-ctx.render_layer(copper)
-ctx.render_layer(mask)
-ctx.render_layer(drill)
-
-# Write png file
-ctx.dump(os.path.join(os.path.dirname(__file__), 'cairo_bottom.png'))
+window_name = 'projector'
+cv2.destroyAllWindows()
+cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
+cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
+                        cv2.WINDOW_FULLSCREEN)
+cv2.imshow(window_name, exposure_layer)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
