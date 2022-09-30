@@ -61,9 +61,11 @@ class GerberCairoContext(GerberContext):
                 if self.size_in_inch is not None else (0.0, 0.0))
 
     def set_bounds(self, bounds, new_surface=False):
+        print('set_bounds_dispaly bounds = {}'.format(bounds))
         origin_in_inch = (bounds[0][0], bounds[1][0])
         size_in_inch = (abs(bounds[0][1] - bounds[0][0]),
                         abs(bounds[1][1] - bounds[1][0]))
+        print('size in inch: {}'.format(size_in_inch))        
         size_in_pixels = self.scale_point(size_in_inch)
         print('size in pixels: {}'.format(size_in_pixels))
         self.origin_in_inch = origin_in_inch if self.origin_in_inch is None else self.origin_in_inch
