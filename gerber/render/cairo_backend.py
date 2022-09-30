@@ -65,6 +65,7 @@ class GerberCairoContext(GerberContext):
         size_in_inch = (abs(bounds[0][1] - bounds[0][0]),
                         abs(bounds[1][1] - bounds[1][0]))
         size_in_pixels = self.scale_point(size_in_inch)
+        print('size in pixels: {}'.format(size_in_pixels))
         self.origin_in_inch = origin_in_inch if self.origin_in_inch is None else self.origin_in_inch
         self.size_in_inch = size_in_inch if self.size_in_inch is None else self.size_in_inch
         self._xform_matrix = cairo.Matrix(xx=1.0, yy=-1.0,

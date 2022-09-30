@@ -83,20 +83,6 @@ ctx.dump(os.path.join(os.path.dirname(__file__), 'to_display.png'))
 
 exposure_layer = cv2.imread('to_display.png')
 window_name = 'PCB_Printer'
-
-# screenx and screeny are size of screen, 1280 by 720 for example
-# image is the image to center on the screen, sized imagex by imagey
-
-# create a black image as big as the screen
-bg_img = np.zeros((height, width, 3), np.uint8)
-bg_img[:, 0:height] = (0, 0, 0)
-# add a white border to define the region
-cv2.rectangle(bg_img, (0, 0), (width-2, height-2), color=(255, 255, 255), thickness=1)
-# calculate the offsets required to center the image
-x_offset = (width - 678)//2
-y_offset = (height - 450)//2
-# insert the samller image into the larger image, centered
-bg_image[y_offset:y_offset+exposure_layer.shape[0], x_offset:x_offset+exposure_layer.shape[1]] = exposure_layer
 cv2.destroyAllWindows()
 cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
