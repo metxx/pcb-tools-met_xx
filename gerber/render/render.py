@@ -59,7 +59,7 @@ class GerberContext(object):
         Rendering opacity. Between 0.0 (transparent) and 1.0 (opaque.)
     """
 
-    def __init__(self, units='inch'):
+    def __init__(self, units='metric'):
         self._units = units
         self._color = (0.7215, 0.451, 0.200)
         self._background_color = (0.0, 0.0, 0.0)

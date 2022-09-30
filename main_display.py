@@ -31,9 +31,9 @@ from gerber.render.cairo_backend import GerberCairoContext
 import numpy as np
 import cv2
 from screeninfo import get_monitors
-import time
 
-GERBER_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), 'gerbers'))
+
+GERBER_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), 'examples/gerbers'))
 
 screen_id = 2
 
@@ -45,17 +45,17 @@ width, height = screen.width, screen.height
 
 # Open the gerber files
 copper = load_layer(os.path.join(GERBER_FOLDER, 'copper.GTL'))
-mask = load_layer(os.path.join(GERBER_FOLDER, 'soldermask.GTS'))
-silk = load_layer(os.path.join(GERBER_FOLDER, 'silkscreen.GTO'))
-drill = load_layer(os.path.join(GERBER_FOLDER, 'ncdrill.DRD'))
+#mask = load_layer(os.path.join(GERBER_FOLDER, 'soldermask.GTS'))
+#silk = load_layer(os.path.join(GERBER_FOLDER, 'silkscreen.GTO'))
+#drill = load_layer(os.path.join(GERBER_FOLDER, 'ncdrill.DRD'))
 
 # Create a new drawing context
 ctx = GerberCairoContext()
 
 display_bounds = [[0,0],[0,0]]
 
-display_bounds[0][1] = width
-display_bounds[1][1] = height
+display_bounds[0][1] = 600
+display_bounds[1][1] = 400
 
 ctx.set_bounds(display_bounds)
 
@@ -64,31 +64,43 @@ ctx.set_bounds(display_bounds)
 ctx.render_layer(copper)
 
 # Draw the soldermask layer
-ctx.render_layer(mask)
+#ctx.render_layer(mask)
 
 
 # The default style can be overridden by passing a RenderSettings instance to
 # render_layer().
 # First, create a settings object:
-our_settings = RenderSettings(color=theme.COLORS['white'], alpha=0.85)
+our_settings = RenderSettings(color=theme.COLORS['white'], alpha=1)
 
 # Draw the silkscreen layer, and specify the rendering settings to use
-ctx.render_layer(silk, settings=our_settings)
+#ctx.render_layer(silk, settings=our_settings)
 
 # Draw the drill layer
-ctx.render_layer(drill)
+#ctx.render_layer(drill)
 
 # Write output to png file
-ctx.dump(os.path.join(os.path.dirname(__file__), 'cairo_example.png'))
+ctx.dump(os.path.join(os.path.dirname(__file__), 'to_display.png'))
 
-exposure_layer = cv2.imread('cairo_example.png')
+exposure_layer = cv2.imread('to_display.png')
+window_name = 'PCB_Printer'
 
-window_name = 'projector'
+# screenx and screeny are size of screen, 1280 by 720 for example
+# image is the image to center on the screen, sized imagex by imagey
+
+# create a black image as big as the screen
+bg_img = np.zeros((height, width, 3), np.uint8)
+bg_img[:, 0:height] = (0, 0, 0)
+# add a white border to define the region
+cv2.rectangle(bg_img, (0, 0), (width-2, height-2), color=(255, 255, 255), thickness=1)
+# calculate the offsets required to center the image
+x_offset = (width - 678)//2
+y_offset = (height - 450)//2
+# insert the samller image into the larger image, centered
+bg_image[y_offset:y_offset+exposure_layer.shape[0], x_offset:x_offset+exposure_layer.shape[1]] = exposure_layer
 cv2.destroyAllWindows()
 cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
 cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
-cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN,
-                        cv2.WINDOW_FULLSCREEN)
+cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow(window_name, exposure_layer)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
