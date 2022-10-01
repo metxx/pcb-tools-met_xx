@@ -25,10 +25,10 @@ def calculate_bounds(layer):
 
     display_bounds = [[0,0],[0,0]]
 
-    display_bounds[0][0] = (-width_delta + shift_x)
-    display_bounds[1][0] = (-height_delta + shift_y)
-    display_bounds[0][1] = (width_pic+width_delta + shift_x)
-    display_bounds[1][1] = (height_pic+height_delta + shift_y)
+    display_bounds[0][0] = (-width_delta)
+    display_bounds[1][0] = (-height_delta)
+    display_bounds[0][1] = (width_pic+width_delta)
+    display_bounds[1][1] = (height_pic+height_delta)
 
     #print('dispaly bounds = {}'.format(display_bounds))
 
@@ -46,3 +46,12 @@ def show_on_LCD():
     cv2.imshow(window_name, exposure_layer)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+def move_xy(bounds, move_x, move_y):
+
+    bounds[0][0] = (bounds[0][0] + move_x)
+    bounds[1][0] = (bounds[1][0] + move_y)
+    bounds[0][1] = (bounds[0][1] + move_x)
+    bounds[1][1] = (bounds[1][1] + move_y)
+
+    return bounds
