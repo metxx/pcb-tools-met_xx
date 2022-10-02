@@ -40,7 +40,7 @@ METADATA = {
 }
 
 SETUPTOOLS_METADATA = {
-    'install_requires': ['cairocffi==0.6'],
+    'install_requires': ['opencv-python==4.6.0.66', 'screeninfo==0.8.1'],
     'entry_points': {
         'console_scripts': [
             'gerber-render = gerber.__main__:main',
