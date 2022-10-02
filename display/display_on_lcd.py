@@ -3,22 +3,16 @@ from screeninfo import get_monitors
 
 screen = get_monitors()[0]
 
-def calculate_bounds(layer):
+def calculate_bounds(layer, display_scale):
 
     print(screen)
     width_screen, height_screen = screen.width, screen.height
 
-    width_screen_inch = width_screen/300
-    height_screen_inch = height_screen/300
-
-
-    shift_x, shift_y = 0,0
+    width_screen_inch = width_screen/display_scale
+    height_screen_inch = height_screen/display_scale
 
     height_pic = layer.bounds[1][1]
     width_pic = layer.bounds[0][1]
-
-    #print('widthpic = {}'.format(width_pic))
-    #print('heightpic = {}'.format(height_pic))
 
     width_delta = (width_screen_inch-width_pic)/2
     height_delta = (height_screen_inch-height_pic)/2
@@ -29,8 +23,6 @@ def calculate_bounds(layer):
     display_bounds[1][0] = (-height_delta)
     display_bounds[0][1] = (width_pic+width_delta)
     display_bounds[1][1] = (height_pic+height_delta)
-
-    #print('dispaly bounds = {}'.format(display_bounds))
 
     return display_bounds
 
