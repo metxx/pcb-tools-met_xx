@@ -3,6 +3,13 @@ from gerber import load_layer
 from gerber.render import RenderSettings, theme
 from gerber.render.cairo_backend import GerberCairoContext
 from display import display_on_lcd
+from flask import Flask
+from flask import send_from_directory
+from flask import render_template
+
+app = Flask(__name__, )
+
+FLUTTER_WEB_APP = 'templates'
 
 # Scale corespond to number of pixels per inch - display property 
 display_scale = 300
@@ -34,4 +41,36 @@ else:
 
 ctx.dump(os.path.join(os.path.dirname(__file__), 'to_display.png'))
 
-display_on_lcd.show_on_LCD()
+#Flask web server and API
+
+@app.route('/')
+def render_page():
+    return render_template('index.html')
+
+
+@app.route('/web/')
+def render_page_web():
+    return render_template('index.html')
+
+
+@app.route('/web/<path:name>')
+def return_flutter_doc(name):
+
+    datalist = str(name).split('/')
+    DIR_NAME = FLUTTER_WEB_APP
+
+    if len(datalist) > 1:
+        for i in range(0, len(datalist) - 1):
+            DIR_NAME += '/' + datalist[i]
+
+    return send_from_directory(DIR_NAME, datalist[-1])
+
+@app.route('/web/display')
+def display_to_lcd():
+    display_on_lcd.show_on_LCD()
+    print("Motif visible on display")
+    return
+
+
+if __name__ == '__main__':
+    app.run()
