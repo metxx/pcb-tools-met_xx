@@ -41,21 +41,21 @@ def show_on_LCD():
     cv2.imshow(window_name, exposure_layer)
     print('imshow succesfull')
     cv2.waitKey(0)
-    print('key waited')
-    cv2.destroyAllWindows()
-    print('destroyed all windows')
+    print('0')
+    #cv2.destroyAllWindows()
+    #print('destroyed all windows')
     return
 
 def update_on_LCD():
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
     exposure_layer = cv2.imread('./to_display.png')
     cv2.imshow(window_name, exposure_layer)
     print('imshow succesfull')
+    #cv2.waitKey(0)
+    #print('key waited')
+    #cv2.destroyAllWindows()
+    #print('destroyed all windows')
     cv2.waitKey(0)
-    print('key waited')
-    cv2.destroyAllWindows()
-    print('destroyed all windows')
-    cv2.waitKey(1)
     return
 
 def move_xy(bounds, move_x, move_y):
