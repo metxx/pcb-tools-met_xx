@@ -2,6 +2,8 @@ import cv2
 from screeninfo import get_monitors
 
 screen = get_monitors()[0]
+window_name = 'PCB_Printer'
+    
 
 def calculate_bounds(layer, display_scale):
 
@@ -27,17 +29,34 @@ def calculate_bounds(layer, display_scale):
     return display_bounds
 
 def show_on_LCD():
-
+    print('in show_on_lcd function')
     exposure_layer = cv2.imread('./to_display.png')
-
-    window_name = 'PCB_Printer'
-    cv2.destroyAllWindows()
+    print('im read succesfull')
     cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+    print('named window succesfull')
     cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
+    print('move window succesfull')
     cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    print('set window property')
     cv2.imshow(window_name, exposure_layer)
+    print('imshow succesfull')
     cv2.waitKey(0)
+    print('key waited')
     cv2.destroyAllWindows()
+    print('destroyed all windows')
+    return
+
+def update_on_LCD():
+    cv2.destroyAllWindows()
+    exposure_layer = cv2.imread('./to_display.png')
+    cv2.imshow(window_name, exposure_layer)
+    print('imshow succesfull')
+    cv2.waitKey(0)
+    print('key waited')
+    cv2.destroyAllWindows()
+    print('destroyed all windows')
+    cv2.waitKey(1)
+    return
 
 def move_xy(bounds, move_x, move_y):
 
