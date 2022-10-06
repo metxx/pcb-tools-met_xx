@@ -1,3 +1,4 @@
+import pdb
 import cv2
 from screeninfo import get_monitors
 
@@ -32,6 +33,7 @@ def show_on_LCD():
     print('in show_on_lcd function')
     exposure_layer = cv2.imread('./to_display.png')
     print('im read succesfull')
+    #pdb.set_trace()
     cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
     print('named window succesfull')
     cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
@@ -39,24 +41,23 @@ def show_on_LCD():
     cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
     print('set window property')
     cv2.imshow(window_name, exposure_layer)
+    cv2.waitKey(1)
     print('imshow succesfull')
-    cv2.waitKey(0)
-    print('key waited')
-    cv2.destroyAllWindows()
-    print('destroyed all windows')
-    return
+    #print('key waited')
+    #cv2.destroyAllWindows()
+    #cv2.waitKey(20)
+    #print('destroyed all windows')
+    return 'null'
 
 def update_on_LCD():
-    cv2.destroyAllWindows()
     exposure_layer = cv2.imread('./to_display.png')
+    print('imread succesful')
+    #pdb.set_trace()
     cv2.imshow(window_name, exposure_layer)
     print('imshow succesfull')
-    cv2.waitKey(0)
-    print('key waited')
-    cv2.destroyAllWindows()
-    print('destroyed all windows')
     cv2.waitKey(1)
-    return
+    print('key waited')
+    return 
 
 def move_xy(bounds, move_x, move_y):
 

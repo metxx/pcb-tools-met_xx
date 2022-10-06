@@ -1,5 +1,7 @@
 from crypt import methods
 import os
+import threading
+import traceback
 
 from cairo import Content
 from numpy import True_
@@ -87,11 +89,14 @@ def move_xy():
     display_on_lcd.move_xy(display_bounds, move_x=float(package['move_x'])/display_scale, move_y=float(package['move_y'])/display_scale)
     print('display on lcd move xy succesful')
     render()
-    print('rener succesful')
-    display_on_lcd.update_on_LCD()
+    print('render succesful')
+    try:
+        display_on_lcd.update_on_LCD()
+    except Exception as e:
+        print(traceback.format_exc())
     print('display on lcd show on lcd succesfull')
     return 'Jason posted'
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+app.run(threading=True)
