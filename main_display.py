@@ -1,8 +1,5 @@
-from crypt import methods
 import os
 
-from cairo import Content
-from numpy import True_
 from gerber import load_layer
 from gerber.render import RenderSettings, theme
 from gerber.render.cairo_backend import GerberCairoContext
