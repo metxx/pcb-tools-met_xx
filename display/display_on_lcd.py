@@ -28,9 +28,9 @@ def calculate_bounds(layer, display_scale):
 
     return display_bounds
 
-def show_on_LCD():
+def show_on_LCD(time):
     print('in show_on_lcd function')
-    exposure_layer = cv2.imread('./to_display.png')
+    exposure_layer = cv2.imread('./tmp/to_display.png')
     print('im read succesfull')
     cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
     print('named window succesfull')
@@ -40,7 +40,9 @@ def show_on_LCD():
     print('set window property')
     cv2.imshow(window_name, exposure_layer)
     print('imshow succesfull')
-    cv2.waitKey(100)
+    cv2.waitKey(time)
+    cv2.destroyAllWindows()
+    print('destroyed all windows')
     return
 
 def hide_on_LCD():
