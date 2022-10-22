@@ -30,7 +30,7 @@ def calculate_bounds(layer, display_scale):
 
 def show_on_LCD(time):
     print('in show_on_lcd function')
-    exposure_layer = cv2.imread('./tmp/to_display.png')
+    exposure_layer = cv2.imread('./to_display.png')
     print('im read succesfull')
     cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
     print('named window succesfull')

@@ -2,11 +2,10 @@
 
 #to display api docs go to: http://127.0.0.1:8000/docs#/
 
-#from fileinput import filename
 import os
 import shutil
+import zipfile
 
-#from numpy import positive
 from gerber import load_layer
 from gerber.render import RenderSettings, theme
 from gerber.render.cairo_backend import GerberCairoContext
@@ -38,8 +37,6 @@ def load_layer_from_file(file_name):
 
     return
 
-#loaded_layer = load_layer(os.path.join(TMP_FOLDER, 'copper.GTL'))
-
 # Create a new drawing context
 ctx = GerberCairoContext(scale = display_scale)
 
@@ -50,10 +47,9 @@ def render(render_bounds, invert, mirror):
 
     ctx.render_layer(loaded_layer, settings=black_settings, bgsettings=white_settings, bounds=render_bounds)
 
-    ctx.dump(os.path.join(os.path.dirname(__file__), 'tmp/to_display.png'))
+    ctx.dump(os.path.join(os.path.dirname(__file__), 'to_display.png'))
 
     return
-
 
 #Input model for show function
 class Show_properties (BaseModel):
@@ -65,7 +61,7 @@ class Show_properties (BaseModel):
     pwm:int
     file_name:str
 
-#Base  model dor files
+#input model dor files
 class Options (BaseModel):
     FileName: str
     FileDesc: str = 'Upload for demonstration'
@@ -74,8 +70,8 @@ class Options (BaseModel):
 @app.post("/destroy")
 async def destroy():
     display_on_lcd.hide_on_LCD()
-    if os.path.exists("./tmp/to_display.png"):
-        os.remove("./tmp/to_display.png")
+    if os.path.exists("to_display.png"):
+        os.remove("to_display.png")
         print('file removed')
     return 'window destroyed'
 
@@ -83,12 +79,12 @@ async def destroy():
 async def get_data(request: Request, options: Show_properties):
     result = await request.json()
 
-    move_x = result['move_x']
-    move_y = result['move_y']
+    move_x = float(result['move_x'])
+    move_y = float(result['move_y'])
     positive = bool(result['positive'])
     mirror = bool(result['mirror'])
-    exp_time = result['exp_time']
-    pwm = ['pwm']
+    exp_time = int(result['exp_time'])
+    pwm = int(result['pwm'])
     file_name = result['file_name']
 
     ctx.clear()
@@ -100,18 +96,24 @@ async def get_data(request: Request, options: Show_properties):
 
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = File(...)):
-
-#Prints result in cmd – verification purpose
+    for f in os.listdir("./tmp/"):
+        os.remove(os.path.join("./tmp/", f))
     print(file.filename)
-
-    #def create_file(file: UploadFile = File(...)):
-    #global upload_folder
     file_object = file.file
-    #create empty file to copy the file_object to
     upload_folder = open(os.path.join(TMP_FOLDER, file.filename), 'wb+')
     shutil.copyfileobj(file_object, upload_folder)
     upload_folder.close()
-    return {"filename": file.filename}
-
-#Sends server the name of the file as a response
-    #return {"Filename": data.filename}
+    try:
+        with zipfile.ZipFile(os.path.join(TMP_FOLDER, file.filename)) as z:
+            z.extractall("./tmp/")
+            if os.path.exists(os.path.join(TMP_FOLDER, file.filename)):
+                os.remove(os.path.join(TMP_FOLDER, file.filename))
+                print('zip removed')
+            print("Extracted all")
+            dir_list = os.listdir("./tmp/")
+            print(dir_list)
+            return(dir_list)
+    except:
+        return {"Not zip filename": file.filename}
+    
+    
