@@ -2,8 +2,12 @@
 
 #to display api docs go to: http://127.0.0.1:8000/docs#/
 
+from distutils import dir_util
+from itertools import count
+from multiprocessing.sharedctypes import Value
 import os
 import shutil
+from xml.etree.ElementTree import tostring
 import zipfile
 
 from gerber import load_layer
@@ -11,6 +15,7 @@ from gerber.render import RenderSettings, theme
 from gerber.render.cairo_backend import GerberCairoContext
 from display import display_on_lcd
 from fastapi import FastAPI, Request, File, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -70,10 +75,18 @@ class Options (BaseModel):
 @app.post("/destroy")
 async def destroy():
     display_on_lcd.hide_on_LCD()
-    if os.path.exists("to_display.png"):
-        os.remove("to_display.png")
-        print('file removed')
     return 'window destroyed'
+
+@app.get("/serve_layer_for_preview")
+async def return_image():
+    return FileResponse("to_display.png")
+
+@app.get("/files_on_server")
+async def return_file_names():
+        dir_list = os.listdir("./tmp/")
+        json_dict = {"responseObj":[{"Key": dir_list.index(value),"Value": value} for value in dir_list]}
+        print(json_dict)
+        return(json_dict)
 
 @app.post("/print")
 async def get_data(request: Request, options: Show_properties):
@@ -114,6 +127,6 @@ async def create_upload_file(file: UploadFile = File(...)):
             print(dir_list)
             return(dir_list)
     except:
-        return {"Not zip filename": file.filename}
+        return {file.filename}
     
     
