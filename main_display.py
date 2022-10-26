@@ -1,9 +1,10 @@
-#to run this with api: uvicorn main_display:app --reload
+#to run this with api on local: uvicorn main_display:app --reload
+#to run this with api publicly: uvicorn main_display:app --reload --host 0.0.0.0
+
 
 #to display api docs go to: http://127.0.0.1:8000/docs#/
 
-from distutils import dir_util
-from itertools import count
+
 from multiprocessing.sharedctypes import Value
 import os
 import shutil
