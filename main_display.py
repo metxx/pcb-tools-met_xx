@@ -66,6 +66,13 @@ class Show_properties (BaseModel):
     pwm:int
     file_name:str
 
+class Render_properties (BaseModel):
+    move_x: float
+    move_y: float
+    positive: bool
+    mirror: bool
+    file_name:str
+
 #input model dor files
 class Options (BaseModel):
     FileName: str
@@ -105,7 +112,22 @@ async def get_data(request: Request, options: Show_properties):
     display_bounds = display_on_lcd.calculate_bounds(loaded_layer, display_scale = display_scale)
     render(display_on_lcd.move_xy(display_bounds, move_x, move_y), invert = positive, mirror = mirror)
     display_on_lcd.show_on_LCD(exp_time)
-    return result
+    return
+
+@app.post("/render")
+async def get_data(request: Request, options: Render_properties):
+    result = await request.json()
+
+    move_x = float(result['move_x'])
+    move_y = float(result['move_y'])
+    positive = bool(result['positive'])
+    mirror = bool(result['mirror'])
+    file_name = result['file_name']
+    ctx.clear()
+    load_layer_from_file(file_name)
+    display_bounds = display_on_lcd.calculate_bounds(loaded_layer, display_scale = display_scale)
+    render(display_on_lcd.move_xy(display_bounds, move_x, move_y), invert = positive, mirror = mirror)
+    return
 
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = File(...)):
