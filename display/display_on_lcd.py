@@ -53,9 +53,9 @@ def hide_on_LCD():
 
 def move_xy(bounds, move_x, move_y):
 
-    bounds[0][0] = (bounds[0][0] + move_x)
-    bounds[1][0] = (bounds[1][0] + move_y)
-    bounds[0][1] = (bounds[0][1] + move_x)
-    bounds[1][1] = (bounds[1][1] + move_y)
+    bounds[0][0] = (bounds[0][0] + move_x/300)
+    bounds[1][0] = (bounds[1][0] + move_y/300)
+    bounds[0][1] = (bounds[0][1] + move_x/300)
+    bounds[1][1] = (bounds[1][1] + move_y/300)
 
     return bounds
